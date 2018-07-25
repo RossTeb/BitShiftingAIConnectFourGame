@@ -13,11 +13,11 @@ public class Main {
             int m = 6;
             int n =7;
             int r = 4;
-            int turn = 1;
+            int turn = 0;
             //boolean turn = false;
             int moves=0;
             Scanner input = new Scanner(System.in);
-           /* System.out.println("input the number of rows");
+            System.out.println("input the number of rows");
             m = input.nextInt();
             System.out.println("input the number of Columns");
             n = input.nextInt();
@@ -25,7 +25,7 @@ public class Main {
             r = input.nextInt();
 
             System.out.println("who goes first you or the computer? 1:computer/0:you");
-            int turn = input.nextInt();*/
+            turn = input.nextInt();
             Board board = new Board(m,n,r,BigInteger.ZERO,BigInteger.ZERO);
             System.out.println("turn: " + turn);
             while(!board.isWin(true)&&!board.isWin(false))
@@ -35,17 +35,19 @@ public class Main {
                     {
                         board = board.move(true,((n%2)+2));
                         turn =0;
-                        board.printPlayer(true);
-                        board.printPlayer(false);
+                      //  board.printPlayer(true);
+                      //  board.printPlayer(false);
+                        board.print();
                         moves++;
                         continue;
                     }
                     else
                     {
-                        Tree tree = new Tree(board,false,2);
+                        Tree tree = new Tree(board,false,5);
                         board.setP1(tree.getRoot().getChosen().getBoard().getP1());
-                        board.printPlayer(true);
-                        board.printPlayer(false);
+                        //board.printPlayer(true);
+                      //  board.printPlayer(false);
+                        board.print();
                         turn = 0;
                         moves++;
                         continue;
@@ -70,8 +72,9 @@ public class Main {
                     }
 
                     moves++;
-                    board.printPlayer(true);
-                    board.printPlayer(false);
+                    //board.printPlayer(true);
+                   // board.printPlayer(false);
+                    board.print();
                     turn = 1;
                     continue;
                 }
@@ -139,45 +142,50 @@ public class Main {
         if(ok == 1) {
             Board board = new Board();
 
+            //board.setP1(new BigInteger("536935424"));
+           // board.setP2(new BigInteger("283312640"));
+
+
+       //     board = board.move(false,0);
+        //    board = board.move(true,0);
+
+
+            board = board.move(true,1);
+            board = board.move(true,1);
+            board = board.move(false,1);
+
+
+            board = board.move(false,2);
+            board = board.move(false,2);
             board = board.move(true,2);
-              board = board.move(false,2);
-              board = board.move(false,2);
-              board = board.move(false,2);
-              board = board.move(false,2);
+            board = board.move(true,2);
+            board = board.move(true,2);
 
-            //  board = board.move(false,5);
-            //  board = board.move(true,4);
-            //  board = board.move(false,3);
-
-            // board = board.move(false,5);
-            // board = board.move(true,4);
-            //  board = board.move(false,3);
+            board = board.move(false,3);
+            board = board.move(false,3);
+          //  board = board.move(false,3);
 
 
 
-            //
-            // board = board.move(true,5);
-            // board = board.move(true,4);
-            // board = board.move(true,3);
+            board = board.move(true,4);
+            board = board.move(false,4);
+            board = board.move(false,4);
 
-            // board = board.move(true,2);
-            //  board = board.move(true,1);
-            // board = board.move(true,3);
-            // board = board.move(true,6);
 
-            //  board = board.move(false,4);
-            // board = board.move(false,4);
-            // board = board.move(false,6);
-            // board = board.move(false,2);
-            // board = board.move(true,5);
-            //board = board.move(false,5);
-            //board = board.move(false,4);
+           // board = board.move(true,5);
+          //  board = board.move(false,5);
 
-            // Tree tree = new Tree(board,false);
-             board.printPlayer(false);
-             board.printPlayer(true);
+        //    board = board.move(false,6);
+
+            board.print();
+             Tree tree = new Tree(board,false,2);
+
+             //board.printPlayer(true);
             // System.out.println("evaluation: "+board.evaluate(false));
-              System.out.println(board.isWin(false));
+            System.out.println(board.nearestWin(true));
+            System.out.println(board.evaluate(false));
+            System.out.println(board.isWin(true));
+            System.out.println(board.isWin(false));
             //  System.out.println(board.nearestWin(true));
             // System.out.println(board.isDouble(true));
             // System.out.println(board.movesFromDouble(true));

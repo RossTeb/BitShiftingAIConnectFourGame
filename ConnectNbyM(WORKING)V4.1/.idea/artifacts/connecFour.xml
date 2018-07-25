@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="connecFour">
+    <output-path>$PROJECT_DIR$/out/artifacts/connecFour</output-path>
+    <root id="archive" name="connecFour.jar">
+      <element id="module-output" name="ConnectNbyM" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>

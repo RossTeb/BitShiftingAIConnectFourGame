@@ -284,9 +284,9 @@ public class Tree {
         Node current = root;
         LinkedList<Node> queue = new LinkedList<Node>();
 
-        System.out.println("root");
-        System.out.println("tier: " + current.getTier());
-        current.getBoard().printPlayer(turn);
+       // System.out.println("root");
+       // System.out.println("tier: " + current.getTier());
+      //  current.getBoard().printPlayer(turn);
 
 
 
@@ -298,12 +298,20 @@ public class Tree {
                     for (int i = 0; i < boardCurrent.getN(); i++)
                     {
 
+                        if(current.getBoard().isWin(turn))
+                        {
+                            System.out.println("Winning Board");
+
+                            invalidMoves++;
+                            continue;
+                        }
                         if(current.getBoard().validMove(!turn,i))
                         {
                             current.addChild(new Node(current, current.getTier() + 1, current.getBoard().move(!turn,i), !current.getPlayer()));
                            //current.getChild(i).evaluate(!turn);
                         }
-                       else
+
+                        else
                         {
                             System.out.println("invalid Move");
 
@@ -313,7 +321,7 @@ public class Tree {
                         //System.out.println("move: " + (i));
                         //System.out.println("tier: " + (current.getChild(i-invalidMoves).getTier()));
                        // current.getChild(i).getBoard().move(!turn, i);
-                        current.getChild(i-invalidMoves).getBoard().printPlayer(!turn);
+                      //  current.getChild(i-invalidMoves).getBoard().printPlayer(!turn);
 
                         queue.addLast(current.getChild(i-invalidMoves));
                        // queue.addLast(current);
@@ -356,8 +364,8 @@ public class Tree {
                     current.evaluate(!turn);
                     tempQ.add(current);
                     //current.getBoard().printPlayer(true);
-                    System.out.println("turn : " + !turn);
-                    System.out.println("evaluation: " + current.getBoard().evaluate(!turn));
+                   // System.out.println("turn : " + !turn);
+                   // System.out.println("evaluation: " + current.getBoard().evaluate(!turn));
                     // current.getBoard().printPlayer(false);
 
                     current.setValue(current.getEvaluation());
@@ -376,8 +384,8 @@ public class Tree {
 
                 tempQ.add(current);
                 //current.getBoard().printPlayer(true);
-                System.out.println("turn : " + turn);
-                System.out.println("evaluation: " + current.getBoard().evaluate(turn));
+               // System.out.println("turn : " + turn);
+               // System.out.println("evaluation: " + current.getBoard().evaluate(turn));
                 // current.getBoard().printPlayer(false);
 
                 current.setValue(current.getEvaluation());
@@ -405,7 +413,7 @@ public class Tree {
                 {
                    // current.evaluate(turn);
                     min = current.getValue();
-                    System.out.println("min" +min);
+                   // System.out.println("min" +min);
                     if(min==current.getValue())
                     {
                         int x = (int)Math.random()*2;
@@ -457,7 +465,7 @@ public class Tree {
                 {
                     // current.evaluate(turn);
                     max = current.getValue();
-                    System.out.println("max" +max);
+                   // System.out.println("max" +max);
 
                     if(min==current.getValue())
                     {
@@ -506,6 +514,11 @@ public class Tree {
             current.setChosen(current.getChild(0));
             for(int i =0;i<current.getChildren().size();i++)
             {
+                if(current.getChild(i).getBoard().isWin(true))
+                {
+                    current.setChosen(current.getChild(i));
+                    break;
+                }
                 if(current.getChild(i).getValue()>Max)
                 {
                     Max = current.getChild(i).getValue();

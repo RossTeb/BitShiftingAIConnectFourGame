@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ConnectNbyM:jar2">
+    <output-path>$PROJECT_DIR$/out/artifacts/ConnectNbyM_jar2</output-path>
+    <root id="archive" name="ConnectNbyM.jar">
+      <element id="module-output" name="ConnectNbyM" />
+    </root>
+  </artifact>
+</component>

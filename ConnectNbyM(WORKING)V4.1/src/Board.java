@@ -49,11 +49,45 @@ public class Board {
     }
 
 
+    public void print()
+    {   String board1;
+        String board2;
+
+        System.out.println("Player:1");
+        board1 = P1.or(BigInteger.ONE.shiftLeft(m * n)).toString(2).substring(1);
+        System.out.println(board1);
+
+        System.out.println("Player:2");
+        board2 = P2.or(BigInteger.ONE.shiftLeft(m * n)).toString(2).substring(1);
+        System.out.println(board2);
+        for(int i = 0; i < m;i++)
+        {
+            System.out.print("| ");
+            for(int j= 0; j<n; j++)
+            {
+                if(board1.charAt(board1.length()-1-(j*m+i))== '1')
+                {
+                    System.out.print("X | ");
+                }
+                else if(board2.charAt(board2.length()-1-(j*m+i))== '1')
+                {
+                    System.out.print("O | ");
+                }
+                else
+                {
+                    System.out.print("  | ");
+                }
+            }
+            System.out.println();
+        }
+    }
+
     Board()
     {
         board = new int[m*n];
     }
-
+    String Print1;
+    String Print2;
     Board(int m, int n,int r, BigInteger Play1,BigInteger Play2)
     {
         this.P1 = Play1;
@@ -64,6 +98,8 @@ public class Board {
         P1.shiftLeft((m * n) + 1);
         P2.shiftLeft((m * n) + 1);
         board = new int[m*n];
+        Print1 = printPlayer(Play1);
+        Print2 = printPlayer(Play2);
     }
 
     Board(int m, int n)
@@ -83,7 +119,6 @@ public class Board {
         //for player 1
         if(turn)
         {
-
             if(isWin(P1))
             {
                 if(isWin(P2))
@@ -97,12 +132,16 @@ public class Board {
             }
             else if(isWin(P2))
             {
-                return -98;
+                return -99;
+            }
+            else if(nearestWin(false)==1)
+            {
+                return -97;
             }
             else if(isDouble(true))
             {
                 evaluation += ((m-1)-movesFromDouble(true))+r*2+4;
-                System.out.println("current value1 :" +evaluation);
+  //              System.out.println("current value1 :" +evaluation);
             }
             if(nearestWin(true)>r)
             {
@@ -118,21 +157,25 @@ public class Board {
             {
                 if(isWin(P1))
                 {
-                    return -98;
+                    return 98;
                 }
                 else
                 {
-                    return 99;
+                    return -99;
                 }
             }
             else if(isWin(P1))
             {
-                return -98;
+                return 99;
+            }
+            else if (nearestWin(true)==1)
+            {
+                return 97;
             }
             else if(isDouble(false))
             {
-                evaluation -= ((m-1)-movesFromDouble(false))+r*2;
-                System.out.println("current value1x :" +evaluation);
+                evaluation -= ((m-1)-movesFromDouble(false))+r*2+1;
+       //         System.out.println("current value1x :" +evaluation);
             }
             else
             {
@@ -141,9 +184,9 @@ public class Board {
                     evaluation -= wins2;
                 }
                 else {
-                    evaluation -= (r - nearestWin(false))*2+wins2;
+                    evaluation -= (r - nearestWin(false))*2+wins2+1;
                 }
-                System.out.println("current value2x :" +evaluation);
+ //               System.out.println("current value2x :" +evaluation);
             }
 
         }
@@ -165,12 +208,16 @@ public class Board {
             }
             else if(isWin(P1))
             {
-                return -98;
+                return -99;
+            }
+            else if(nearestWin(true)==1)
+            {
+                return -97;
             }
             else if(isDouble(false))
             {
                 evaluation += ((m-1)-movesFromDouble(false))+r*2+4;
-                System.out.println("current value1x :" +evaluation);
+      //          System.out.println("current value1x :" +evaluation);
             }
             else
             {
@@ -181,7 +228,7 @@ public class Board {
                 else {
                     evaluation += (r - nearestWin(false))*2+wins2;
                 }
-                System.out.println("current value2x :" +evaluation);
+   //             System.out.println("current value2x :" +evaluation);
             }
 
 
@@ -189,28 +236,32 @@ public class Board {
             {
                 if(isWin(P2))
                 {
-                    return -98;
+                    return 98;
                 }
                 else
                 {
-                    return 99;
+                    return -99;
                 }
             }
             else if(isWin(P2))
             {
-                return -98;
+                return 99;
+            }
+            else if (nearestWin(false)==1)
+            {
+                return 97;
             }
             else if(isDouble(true))
             {
-                evaluation -= ((m-1)-movesFromDouble(true))+r*2;
-                System.out.println("current value1 :" +evaluation);
+                evaluation -= ((m-1)-movesFromDouble(true))+r*2+1;
+         //       System.out.println("current value1 :" +evaluation);
             }
             if(nearestWin(true)>r)
             {
                 evaluation -= wins1;
             }
             else {
-                evaluation -= (r - nearestWin(true))*2+wins1;
+                evaluation -= (r - nearestWin(true))*2+wins1+1;
             }
 
         }
@@ -403,22 +454,38 @@ public class Board {
                 return true;
             }
 
-            //vertical
             temp = board;
+            BigInteger temp2 =board;
             for (int i = 1; i < r; i++)
             {
-                temp = temp.and(temp.shiftLeft(1));
+                for(int j = 1; j <= n;j++)
+                {
+                    temp2 = temp2.clearBit((j*m)-1);
+
+                }
+                temp2 = temp2.shiftLeft(1);
+                temp = temp.and(temp2);
+                temp2 = temp;
             }
             if(!temp.equals(BigInteger.ZERO))
             {
+
                 return true;
             }
 
             //vertical
             temp = board;
+            temp2 = board;
             for (int i = 1; i < r; i++)
             {
-                temp = temp.and(temp.shiftRight(1));
+                for(int j = 0; j < n;j++)
+                {
+                    temp2 = temp2.clearBit((j*m));
+
+                }
+                temp2 = temp2.shiftRight(1);
+                temp = temp.and(temp2);
+                temp2 = temp;
             }
             if(!temp.equals(BigInteger.ZERO))
             {
@@ -427,9 +494,16 @@ public class Board {
 
             //upstairs diagonal
             temp = board;
+            temp2 = board;
             for (int i = 1; i < r; i++)
             {
-                temp = temp.and(temp.shiftLeft(m-1).clearBit(m * n - 1));
+                for(int j = 0; j < n;j++)
+                {
+                    temp2 = temp2.clearBit((j*m));
+                }
+                temp2 = temp2.shiftLeft(m - 1);
+                temp = temp.and(temp2);
+                temp2 = temp;
             }
             if(!temp.equals(BigInteger.ZERO))
             {
@@ -477,7 +551,6 @@ public class Board {
                 for(int j = 1; j <= n;j++)
                 {
                     temp2 = temp2.clearBit((j*m)-1);
-
                 }
                 temp2 = temp2.shiftLeft(1);
                 temp = temp.and(temp2);
@@ -494,13 +567,12 @@ public class Board {
             temp2 = P1;
             for (int i = 1; i < r; i++)
             {
-                for(int j = 1; j <= n;j++)
+                for(int j = 0; j < n;j++)
                 {
                     temp2 = temp2.clearBit((j*m));
-
                 }
                 temp2 = temp2.shiftRight(1);
-                temp = temp.and(temp2.shiftRight(1));
+                temp = temp.and(temp2);
                 temp2 = temp;
             }
             if(!temp.equals(BigInteger.ZERO))
@@ -510,9 +582,16 @@ public class Board {
 
             //upstairs diagonal
             temp = P1;
+            temp2 = P1;
             for (int i = 1; i < r; i++)
             {
-                temp = temp.and(temp.shiftLeft(m-1).clearBit(m * n - 1));
+                for(int j = 0; j < n;j++)
+                {
+                    temp2 = temp2.clearBit((j*m));
+                }
+                temp2 = temp2.shiftLeft(m - 1);
+                temp = temp.and(temp2);
+                temp2 = temp;
             }
             if(!temp.equals(BigInteger.ZERO))
             {
@@ -578,7 +657,7 @@ public class Board {
 
                 }
                 temp2 = temp2.shiftRight(1);
-                temp = temp.and(temp2.shiftRight(1));
+                temp = temp.and(temp2);
                 temp2 = temp;
             }
             if(!temp.equals(BigInteger.ZERO))
@@ -589,9 +668,16 @@ public class Board {
 
             //upstairs diagonal
             temp = P2;
+            temp2 = P2;
             for (int i = 1; i < r; i++)
             {
-                temp = temp.and(temp.shiftLeft(m-1).clearBit(m * n - 1));
+                for(int j = 0; j < n;j++)
+                {
+                    temp2 = temp2.clearBit((j*m));
+                }
+                temp2 = temp2.shiftLeft(m - 1);
+                temp = temp.and(temp2);
+                temp2 = temp;
             }
             if(!temp.equals(BigInteger.ZERO))
             {
@@ -737,8 +823,9 @@ public class Board {
                                 {
                                     if(a==3&&j>0)
                                     {
-                                        attempt = attempt.or(temp);
-                                        if (this.isPossibleMove(attempt, turn)) {
+
+                                        if (this.isPossibleMove(temp, turn)) {
+                                            attempt = attempt.or(temp);
                                             turnCount++;
 
                                             if (this.isWin(attempt)) {
@@ -753,6 +840,23 @@ public class Board {
                                             }
                                         }
                                     }
+                                    else if(a ==6&&turnCount>0)
+                                    {
+                                        turnCount++;
+                                        attempt = attempt.or(temp);
+                                        if (this.isWin(attempt)) {
+                                            if (turnCount < Count) {
+                                                //System.out.println("bitcount: " + bitcount);
+                                                //System.out.println("hoyo: " + a);
+                                                //System.out.println("J: " + j);
+                                                wins1++;
+
+
+                                                Count = turnCount;
+                                                //System.out.println("Count: " + Count);
+                                            }
+                                        }
+                                    }
                                     else
                                     {
                                         if (this.isPossibleMove(temp, turn)) {
@@ -764,6 +868,8 @@ public class Board {
                                                     //System.out.println("hoyo: " + a);
                                                     //System.out.println("J: " + j);
                                                     wins1++;
+
+
                                                     Count = turnCount;
                                                     //System.out.println("Count: " + Count);
                                                 }
@@ -816,7 +922,7 @@ public class Board {
                                 }
                                 if(a==2)
                                 {
-                                    if(temp.bitLength()%m==0&&temp.bitLength()<=m*n)
+                                    if(temp.bitLength()%m==0&&temp.bitLength()<=(m*n))
                                     {
                                         break;
                                     }
@@ -888,8 +994,11 @@ public class Board {
                                 {
                                     if(a==3&&j>0)
                                     {
-                                        attempt = attempt.or(temp);
-                                        if (this.isPossibleMove(attempt, turn)) {
+
+                                        if (this.isPossibleMove(temp, turn))
+                                        {
+
+                                            attempt = attempt.or(temp);
                                             turnCount++;
 
                                             if (this.isWin(attempt)) {
@@ -901,6 +1010,23 @@ public class Board {
                                                     Count = turnCount;
                                                     //System.out.println("Count: " + Count);
                                                 }
+                                            }
+                                        }
+                                    }
+                                    else if(a ==6&&turnCount>0)
+                                    {
+                                        turnCount++;
+                                        attempt = attempt.or(temp);
+                                        if (this.isWin(attempt)) {
+                                            if (turnCount < Count) {
+                                                //System.out.println("bitcount: " + bitcount);
+                                                //System.out.println("hoyo: " + a);
+                                                //System.out.println("J: " + j);
+                                                wins1++;
+
+
+                                                Count = turnCount;
+                                                //System.out.println("Count: " + Count);
                                             }
                                         }
                                     }
@@ -1094,7 +1220,11 @@ public class Board {
     {
         if(turn)
         {
-            if(P.bitLength()%m==0)
+            if(P.bitLength()>(m*n))
+            {
+                return false;
+            }
+            else if(P.bitLength()%m==0)
             {
                 return true;
             }
@@ -1109,7 +1239,11 @@ public class Board {
         }
         else
         {
-            if(P.bitLength()%m==0)
+            if(P.bitLength()>(m*n))
+            {
+                return false;
+            }
+            else if(P.bitLength()%m==0)
             {
                 return true;
             }
@@ -1122,6 +1256,14 @@ public class Board {
                 return false;
             }
         }
+    }
+
+    public void setPrint2(String print2) {
+        Print2 = print2;
+    }
+
+    public void setPrint1(String print1) {
+        Print1 = print1;
     }
 
     public Board move(boolean player, int col)
@@ -1145,12 +1287,16 @@ public class Board {
                         else
                         {
                             Temp.setP1(P1.or(BigInteger.ONE.shiftLeft(((col * m) + j) - 1)));
+                            Temp.setPrint1(printPlayer(Temp.getP1()));
+
                             return Temp;
                         }
                     }
                     else if (j == m-1)
                     {
                         Temp.setP1(P1.or(BigInteger.ONE.shiftLeft((col * m) + j)));
+                        Temp.setPrint1(printPlayer(Temp.getP1()));
+
                         return Temp;
                     }
 
@@ -1158,6 +1304,7 @@ public class Board {
                 else
                 {
                     Temp.setP1(P1.or(BigInteger.ONE.shiftLeft((col * m) + m + j - 1)));
+                    Temp.setPrint1(printPlayer(Temp.getP1()));
 
                     return Temp;
                 }
@@ -1179,12 +1326,15 @@ public class Board {
                         else
                         {
                             Temp.setP2(P2.or(BigInteger.ONE.shiftLeft(((col * m) + j) - 1)));
+                            Temp.setPrint2(printPlayer(Temp.getP2()));
                             return Temp;
                         }
                     }
                     else if (j == m-1)
                     {
                         Temp.setP2(P2.or(BigInteger.ONE.shiftLeft((col * m) + j)));
+
+                        Temp.setPrint2(printPlayer(Temp.getP2()));
                         return Temp;
                     }
 
@@ -1192,7 +1342,7 @@ public class Board {
                 else
                 {
                     Temp.setP2(P2.or(BigInteger.ONE.shiftLeft((col * m) + m + j - 1)));
-
+                    Temp.setPrint2(printPlayer(Temp.getP2()));
                     return Temp;
                 }
             }
@@ -1200,6 +1350,30 @@ public class Board {
         System.out.println("something is wrong!");
 
         return null;
+    }
+
+    public String printPlayer(BigInteger player)
+    {
+        String boards;
+        String print ="";
+        //System.out.println("Player:1");
+        if(player.bitLength()>(m*n))
+        {
+            print = print.concat("playerboard is over the size of the board\n");
+        }
+        boards = player.or(BigInteger.ONE.shiftLeft(m * n)).toString(2).substring(1);
+      //  System.out.println(boards);
+
+        for(int i = 0; i < m;i++)
+        {
+            print = print.concat("| ");
+            for(int j= 0; j<n; j++)
+            {
+              print =  print.concat(boards.charAt(boards.length() - 1 - (j * m + i)) + " | ");
+            }
+            print = print.concat("\n");
+        }
+        return print;
     }
 
     public void printPlayer(boolean p)
